@@ -1,0 +1,23 @@
+<% layout("/layouts/boilerplate.ejs") %>
+    <div class="row">
+        <div class="col-6 offset-2">
+            <h3>Listing Details :-</h3>
+        
+                <div class="card">
+                    <div class="card-img-top show-img"><img src="<%=card.image%>" alt="card_image"></div>
+                    <div class="card-body">
+                        <div class="card-text"><%=card.title%></div>
+                        <div class="card-text">&#8377;<%=card.price.toLocaleString("en-IN")%></div>
+                        <div class="card-text"><%=card.description%></div>
+                        <div class="card-text"><%=card.location%></div>
+                        <div class="card-text"><%=card.country%></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="show-buttons">
+            <a href="/listings/<%=card._id%>/edit" class="btn btn-dark edit-btn">Edit this listing</a>
+            <form onsubmit="return confirm('Are you sure you want to delete this item?');" action="/listings/<%=card._id%>?_method=DELETE" method="post">
+                <button type="submit" class="btn btn-dark delete-btn">Delete Listing</button>
+            </form>
+        </div>

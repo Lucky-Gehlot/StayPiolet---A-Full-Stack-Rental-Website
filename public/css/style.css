@@ -1,0 +1,129 @@
+body{
+    font-family:"Playfair Display", serif;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1; /*we are doing this so that our footer will stock to the bottom */
+}
+
+.navbar {
+    height: 4rem;
+    background-color: white;
+}
+
+.navbar-brand{
+    font-size: 2rem;
+}
+
+.nav-link{
+    color: black;
+}
+
+.btn{
+    background-color: rgba(255, 0, 0, 0.858);
+}
+
+.f-info{
+    text-align: center;
+    background-color: rgba(128, 128, 128, 0.27);
+    height: 5rem;
+    display: flex;
+    flex-direction: column;
+    /* flex-wrap: wrap; */
+    /* justify-content: space-between; */
+}
+.f-info-socials{
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+}
+.f-info-socials i{
+    margin-right: 1rem;
+    font-size: 1.2rem;
+    /* justify-content: space-between; */
+}
+
+.f-info-links a{
+    text-decoration: none;
+    color: black;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.listing-img{
+    height: 15rem; 
+    border-radius: 1rem !important;
+    width: 100% !important;
+}
+
+.card {
+    border: none !important; /* Correct Syntax */
+}
+
+.card-body{
+    padding: 0 !important;
+    font-size: 0.8rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.card-body p {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: medium;
+}
+
+.card-text {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: medium;
+}
+
+.listing-link {
+    text-decoration: none;
+}
+
+/* card effect - Overlay effect */
+
+.card-img-overlay{
+    opacity: 0;
+}
+
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+.add {
+    background-color: rgba(255, 0, 0, 0.858) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.show-img img{
+    border-radius: 1rem !important;
+    height: 50vh;
+    width: 40vw;
+}
+
+.show-buttons {
+    margin-left: 14vw;
+    width: 40vw;
+    display: flex;
+    margin-bottom: 2vh;
+    /* justify-content: space-between; */
+}
+
+.edit-btn {
+    margin-right: 5vw;
+}
+
+
+
+
+
+

@@ -1,0 +1,26 @@
+const mongoose = require('mongoose');
+const { title } = require('process');
+const Schema = mongoose.Schema; //to prevent repeatations
+
+const listingSchema = new Schema({
+   title:{
+    type:String,
+    required:true,
+   },
+   description:String,
+   image:{
+    type:String,
+    default:"https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
+    set: (v) => v === ""?"https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170":v,
+   }, //image url will also be a string
+   price:Number,
+   location:String,
+   country:String,
+});
+
+const Listing = mongoose.model("Listing", listingSchema)
+
+
+module.exports = Listing;
+
+//edit karte time and create karte time i need to add a check for checking all the images 
