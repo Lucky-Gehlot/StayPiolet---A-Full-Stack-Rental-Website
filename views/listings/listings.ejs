@@ -5,7 +5,7 @@
     <div class="row row-cols-lg-5 row-cols-md-3 row-cols-sm-2">
     <%for(let listing of allListings){%>
     <a href="/listings/<%=listing._id%>" class="listing-link">
-    <div class="card col">
+    <div class="card col listing-card">
         <img src="<%=listing.image%>" class="card-img-top listing-img" alt="card_image">
         <div class="card-img-overlay"></div> <!---This is for card effect-->
         <div class="card-body">

@@ -65,7 +65,7 @@ body{
     width: 100% !important;
 }
 
-.card {
+.listing-card {
     border: none !important; /* Correct Syntax */
 }
 
@@ -113,7 +113,6 @@ body{
 }
 
 .show-buttons {
-    margin-left: 14vw;
     width: 40vw;
     display: flex;
     margin-bottom: 2vh;
@@ -124,7 +123,17 @@ body{
     margin-right: 5vw;
 }
 
+/* reviews */
+.review-text {
+    color: rgb(33, 31, 31);
+    font-weight: 300;
+}
 
+.review-star{
+    color: green !important;
+    font-weight: 600;
+    
+}
 
 
 
