@@ -25,6 +25,8 @@ body{
 
 .btn{
     background-color: rgba(255, 0, 0, 0.858);
+    color: white;
+    border: 1.5px solid black;
 }
 
 .f-info{
