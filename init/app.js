@@ -16,6 +16,7 @@ const initDB = async () =>{
     await Listing.deleteMany({});
     // The data is likely an array in initData.js, so we iterate and insert individual documents
     // If initData.data is already an array of valid documents, this is fine:
+    initData.data = initData.data.map((obj) => ({...obj,owner:"694073bb8bb26f9155daee72"}))
     await Listing.insertMany(initData.data); 
     console.log("Initialization complete!");
 }

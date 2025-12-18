@@ -1,0 +1,7 @@
+This is my project overview till now - 
+
+1.I created Listing schema to store all the listings which is the main part of this project 
+2.I have made separate file so that i can always clear my database schema as well as my new data so that will be refreshing file so that i can reset my database each time(it called best practice)
+3.Try to make many separate files or you can ask each and every time one question to your self that this file gonna to changed in future if yes than simply add a new file for that particular content Ex - I made separate file for data and separate file for initializing the data 
+4.Now what i have done it while adding, removing or updating the data i need to maintain data validation this i achieved from the npm joy package
+5.Why we are using wrapAsync so that pure function ki definition me apan ko try catch na likhna pade asyncWrap will automatically handle those things by its own 

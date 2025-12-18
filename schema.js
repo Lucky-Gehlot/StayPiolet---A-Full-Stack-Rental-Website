@@ -1,6 +1,7 @@
 const Joi = require('joi'); //use for schema validations
 
 module.exports.listingSchema = Joi.object({
+    //first of all I will check if my complete listing is valid or not 
     listing : Joi.object({
         title: Joi.string().required(),
         description: Joi.string().required(),

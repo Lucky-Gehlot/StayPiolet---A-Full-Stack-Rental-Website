@@ -135,6 +135,10 @@ body{
     
 }
 
+.signup-heading,.login-heading {
+    color:rgba(255, 0, 0, 0.858);
+}
+
 
 
 

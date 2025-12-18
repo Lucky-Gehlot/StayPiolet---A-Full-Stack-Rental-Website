@@ -13,6 +13,16 @@ const {listingSchema} = require("./schema.js"); //for validation
 const {reviewSchema} = require("./schema.js");
 const Review = require("./Models/review.js");
 
+const session = require("express-session");
+const flash = require('connect-flash');
+const passport = require("passport");
+const LocalStratergy = require("passport-local")
+const User = require("./Models/user.js")
+
+const reviewRouter = require('./routes/review.js') //I am just requiring the routes 
+const listingRouter = require('./routes/listing.js')
+const userRouter = require('./routes/user.js')
+
 main()
     .then(() => {
         console.log("connection succesful")})
@@ -24,16 +34,41 @@ async function main(){
 }
 
 app.set("view engine","ejs")
-
 app.set("views",path.join(__dirname,"views"));
-
 app.use(express.static(path.join(__dirname,"public")));
-
 app.use(express.urlencoded({extended:true}))
-
 app.use(methodOverride("_method"));
-
 app.engine('ejs', ejs_mate);
+
+const sessionOptions = {
+    secret:"MySuperSecret",
+    resave:false,
+    saveUninitialized:true,
+    cookie: {
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 3,
+        maxAge: 1000 * 60 * 60 * 24 * 3,
+        httpOnly:true //we keep it true for security purposes
+    }
+}
+
+app.use(session(sessionOptions))
+app.use(flash())
+
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new LocalStratergy(User.authenticate()))
+
+
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+app.use((req,res,next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error")
+    res.locals.currUser = req.user;
+    next();
+})
 
 const port = 8080;
 
@@ -41,120 +76,28 @@ app.listen(port,() => {
     console.log("app is listening on the port - ",port)
 })
 
-//listing validation schema using joy 
-const validateListing = (req,res,next) => {
-    let {error} = listingSchema.validate(req.body);
-    if(error){
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(404,errMsg);
-    }else{
-        next(); //no error 
-    }
-}
-
-//review validation schema using joy
-const validateReview = (req,res,next) => {
-    let {err} = reviewSchema.validate(req.body);
-    if(err){
-        let errMsg = err.details.map((el) => el.message).join(",");
-        throw new ExpressError(404,errMsg);
-    }else{
-        next(); //no error middleware
-    }
-}
-
-app.get("/listings",wrapAsync(async (req,res) => {
-    
-    const allListings = await Listing.find();
-    res.render("listings/listings.ejs",{allListings});
-  
-}))
-
-//create route
-
-app.get("/listings/new",(req,res) => {
-    res.render("listings/new.ejs");
-})
-
-app.post("/listings",validateListing,wrapAsync(async(req,res,next) => {
-        // let result = listingSchema.validate(req.body);
-        // console.log(result)
-        // if(result.error){
-        //     throw new ExpressError(400,result.error)
-        // }
-        let newListing = new Listing(req.body.listing);
-        // if(!req.body.listing.price) next(new ExpressError(404,"Send price"))
-        // if(!req.body.listing.title) next(new ExpressError(404,"Send title"))
-        //first of all i want to verify the image link
-        await newListing.save();
-        res.redirect('/listings');})
-)
-
-//show route
-
-app.get('/listings/:id',wrapAsync(async (req,res) => {
-    let id = req.params.id;
-    let card = await Listing.findById(id).populate("reviews")
-    res.render("listings/show.ejs",{card})
-}));
-
-//edit route
-app.get('/listings/:id/edit',wrapAsync(async (req,res) => {
-    let id = req.params.id;
-    let card = await Listing.findById(id);
-    res.render("listings/edit.ejs",{card});
-}));
-
-//updateroute
-app.put('/listings/:id',validateListing,async (req,res) => {
-    let id = req.params.id;
-    await Listing.findByIdAndUpdate(id, {...req.body.listing}); //deconstruct req.body.listing
-    res.redirect(`/listings/${id}`);
-})
+app.get("/demoUser", async (req,res) => {
+    let fakeUser = new User({
+        email:"student@gmail.com",
+        username:"delta-student", //i can give username because i 
+        // initialized passport and passport will automatically done 
+        // this thing for me 
+    })
 
 
-app.delete('/listings/:id',wrapAsync(async (req,res) => {
-    let id = req.params.id;
-    let deleted = await Listing.findByIdAndDelete(id);
-    console.log(deleted)
-    res.redirect("/listings")
-}));
+    let registeredUser = await User.register(fakeUser,"helloworld"); //user,password
+    res.send(registeredUser);
 
+});
 
+app.use('/listings',listingRouter);
+app.use('/listings/:id/reviews',reviewRouter);
 //post route for reviews - 
-app.post('/listings/:id/reviews',validateReview,wrapAsync(async (req,res) => {
-    
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
+app.use("/", userRouter);
 
-    //first push the model object then save it 
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-
-    res.redirect(`/listings/${req.params.id}`);
-    // let id = req.params.id;
-    // let rev = req.body.review;
-    // console.log(rev)
-    // let newReview = new Review(rev);
-    // let result = await newReview.save();
-    // console.log(result)
-    // let list = await Listing.findById(id);
-    // let result2 = await list.reviews.push(result);
-    // console.log(result2);
-}
-
-))
-
-//delete route for reviews -- 
-app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req,res) => {
-    const {id,reviewId} = req.params;
-    await Listing.findByIdAndUpdate(id,{$pull:{reviews:reviewId}});
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/listings/${id}`);
-}))
-
+app.get('/privacy',(req,res) => {
+    res.render("privacy.ejs")
+})
 
 app.all("/*path",(req,res,next) => {
     
@@ -175,6 +118,8 @@ app.use((err,req,res,message) => {
 app.use((err,req,res,message) => {
     res.send("This called next to next middleware")
 })
+
+
 
 //page error solved (server side solved())
 
