@@ -1,3 +1,6 @@
+require("dotenv").config();
+
+
 const express = require("express");
 // const path = require("path")
 const ejs_mate = require('ejs-mate')
@@ -14,6 +17,8 @@ const {reviewSchema} = require("./schema.js");
 const Review = require("./Models/review.js");
 
 const session = require("express-session");
+const MongoStore = require("connect-mongo").default;
+
 const flash = require('connect-flash');
 const passport = require("passport");
 const LocalStratergy = require("passport-local")
@@ -23,6 +28,13 @@ const reviewRouter = require('./routes/review.js') //I am just requiring the rou
 const listingRouter = require('./routes/listing.js')
 const userRouter = require('./routes/user.js')
 
+
+const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/stayPiolet";
+
+if (!process.env.ATLASDB_URL) {
+    console.warn("WARNING: ATLASDB_URL is not defined in .env. Falling back to local MongoDB.");
+}
+
 main()
     .then(() => {
         console.log("connection succesful")})
@@ -30,7 +42,7 @@ main()
     })
 
 async function main(){
-    await mongoose.connect("mongodb://127.0.0.1:27017/stayPiolet");
+    await mongoose.connect(dbUrl);
 }
 
 app.set("view engine","ejs")
@@ -40,7 +52,22 @@ app.use(express.urlencoded({extended:true}))
 app.use(methodOverride("_method"));
 app.engine('ejs', ejs_mate);
 
+//we want that the session should be stored in the database itself (mongo store)
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto:{
+        secret:"MySuperSecret"
+    },
+    touchAfter: 24 * 60 * 60, // time period in seconds when we want to update the session
+});
+
+store.on("error",function(e){
+    console.log("session store error",e)
+})
+
 const sessionOptions = {
+    store: store,
     secret:"MySuperSecret",
     resave:false,
     saveUninitialized:true,
@@ -50,6 +77,8 @@ const sessionOptions = {
         httpOnly:true //we keep it true for security purposes
     }
 }
+
+
 
 app.use(session(sessionOptions))
 app.use(flash())
@@ -76,19 +105,19 @@ app.listen(port,() => {
     console.log("app is listening on the port - ",port)
 })
 
-app.get("/demoUser", async (req,res) => {
-    let fakeUser = new User({
-        email:"student@gmail.com",
-        username:"delta-student", //i can give username because i 
-        // initialized passport and passport will automatically done 
-        // this thing for me 
-    })
+// app.get("/demoUser", async (req,res) => {
+//     let fakeUser = new User({
+//         email:"student@gmail.com",
+//         username:"delta-student", //i can give username because i 
+//         // initialized passport and passport will automatically done 
+//         // this thing for me 
+//     })
 
 
-    let registeredUser = await User.register(fakeUser,"helloworld"); //user,password
-    res.send(registeredUser);
+//     let registeredUser = await User.register(fakeUser,"helloworld"); //user,password
+//     res.send(registeredUser);
 
-});
+// });
 
 app.use('/listings',listingRouter);
 app.use('/listings/:id/reviews',reviewRouter);
@@ -99,7 +128,7 @@ app.get('/privacy',(req,res) => {
     res.render("privacy.ejs")
 })
 
-app.all("/*path",(req,res,next) => {
+app.all("*path",(req,res,next) => {
     
     next(new ExpressError(400,"page not found"));
     

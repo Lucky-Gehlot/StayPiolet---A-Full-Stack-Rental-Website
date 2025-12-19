@@ -1,20 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StayPiolet</title>
-</head>
-<body>
-    <h3>Edit Listing</h3>
-    <form action="/listings/<%=card._id%>?_method=PUT" method="post">
-        <input type="text" value = "<%=card.title%>" name="listing[title]"><br><br>
-        <textarea name="listing[description]" rows="5" cols="20"> <%=card.description%></textarea><br><br>
-        <input type="text" value = "<%=card.image%>" name="listing[image]"><br><br>
-        <input type="number" value = "<%=card.price%>" name="listing[price]"><br><br>
-        <input type="text" value = "<%=card.country%>" name="listing[country]"><br><br>
-        <input type="text" value = "<%=card.location%>" name="listing[location]"><br><br>
-        <button type="submit">Edit Listing</button>
-    </form>
-</body>
-</html>
+
+<%-layout("/layouts/boilerplate.ejs")%>
+
+
+    <div class="row">
+        <div class="col-8 offset-2">
+            <h3>Edit Listing</h3>
+            <br>
+            <!--if we want to send files(image upload feature) then we need to set enctype = multipart/form-data-->
+            <form action="/listings/<%=card._id%>?_method=PUT" method="post" class="needs-validation" novalidate enctype="multipart/form-data" >
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" placeholder="Ex. My House" name="listing[title]" id="title" value = "<%=card.title%>" class="form-control"
+                        required>
+                    <!-- example of form validation  -->
+                    <div class="valid-feedback"> 
+                    Looks good!
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea placeholder="Ex. Newly build ,fully furnitured" name="listing[description]" rows="5"
+                        cols="20" class="form-control" id="description" required> <%=card.description%></textarea>
+                    <div class="valid-feedback"> 
+                    Looks good!
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload image</label>
+                    <input type="file" name="listing[image]" value = "<%=card.image.url%>" id="image"
+                        class="form-control">
+                    <div class="invalid-feedback">
+                    Please upload an image
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="number" placeholder="Ex. 5000" name="listing[price]" value = "<%=card.price%>" class="form-control"
+                            id="price" required>
+                        <div class="invalid-feedback">
+                        Please enter price.
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 col-md-8">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" placeholder="Ex. India" name="listing[country]" value = "<%=card.country%>" id="country"
+                            class="form-control" required>
+                        <div class="invalid-feedback">
+                        Please enter country.
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" placeholder="Ex. Delhi, New Delhi" name="listing[location]" value = "<%=card.location%>" id="location"
+                        class="form-control" required>
+
+                    <div class="invalid-feedback">
+                    Please add location.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-dark add">Edit List</button>
+                <br><br>
+            </form>
+        </div>
+    </div>
