@@ -42,7 +42,7 @@ main()
     })
 
 async function main(){
-    await mongoose.connect(dbUrl);
+    await mongoose.connect("mongodb://127.0.0.1:27017/stayPiolet");
 }
 
 app.set("view engine","ejs")
@@ -57,7 +57,7 @@ const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto:{
-        secret:"MySuperSecret"
+        secret:process.env.SECRET,
     },
     touchAfter: 24 * 60 * 60, // time period in seconds when we want to update the session
 });
@@ -68,7 +68,7 @@ store.on("error",function(e){
 
 const sessionOptions = {
     store: store,
-    secret:"MySuperSecret",
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie: {
