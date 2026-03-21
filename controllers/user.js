@@ -4,10 +4,22 @@ module.exports.signRender = (req,res) => {
     res.render("users/signup.ejs");
 }
 
-module.exports.signUp = async (req,res) => {
+module.exports.signUp = async (req,res, next) => {
     try{
         const {username,email,password} = req.body;
-        const newUser = new User({email,username})
+        const normalizedEmail = (email || "").trim().toLowerCase();
+
+        const existingUser = await User.findOne({ email: normalizedEmail });
+        if (existingUser) {
+            if (existingUser.googleId) {
+                req.flash("error", "This email is already registered with Google. Please login with Google.");
+            } else {
+                req.flash("error", "This email is already registered. Please login instead.");
+            }
+            return res.redirect("/login");
+        }
+
+        const newUser = new User({email: normalizedEmail, username})
         const registeredUser = await User.register(newUser,password) //authentication
         console.log(registeredUser)
         //Now i want ki jaise hi mera user signup ho jaye i will automatically login my user 

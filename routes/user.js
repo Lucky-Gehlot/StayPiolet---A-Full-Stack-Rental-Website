@@ -31,6 +31,28 @@ router.post('/login',saveRedirectUrl,passport.authenticate("local" , {
     failureFlash: true }),
     userController.login)
 
+router.get("/auth/google", (req, res, next) => {
+    // If user came from a protected page, keep redirect working
+    if (req.query?.returnTo) {
+        req.session.redirectUrl = req.query.returnTo;
+    }
+    next();
+}, passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get(
+    "/auth/google/callback",
+    saveRedirectUrl,
+    passport.authenticate("google", {
+        failureRedirect: "/login",
+        failureFlash: true,
+    }),
+    (req, res) => {
+        req.flash("success", "Welcome back to StayPiolet (Google)!");
+        const redirectUrl = res.locals.redirectUrl || "/listings";
+        res.redirect(redirectUrl);
+    }
+);
+
 router.get('/logout',userController.logOut)
 
 module.exports = router;

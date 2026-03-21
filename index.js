@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ override: true });
 
 
 const express = require("express");
@@ -22,6 +22,7 @@ const MongoStore = require("connect-mongo").default;
 const flash = require('connect-flash');
 const passport = require("passport");
 const LocalStratergy = require("passport-local")
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("./Models/user.js")
 
 const reviewRouter = require('./routes/review.js') //I am just requiring the routes 
@@ -47,7 +48,7 @@ async function main(){
 
 app.set("view engine","ejs")
 app.set("views",path.join(__dirname,"views"));
-app.use(express.static(path.join(__dirname,"public")));
+app.use(express.static(path.join(__dirname,"public"))); //static means those files that will not change - such as CSS stylesheets, client-side JavaScript, images (PNG/JPG), and fonts.
 app.use(express.urlencoded({extended:true}))
 app.use(methodOverride("_method"));
 app.engine('ejs', ejs_mate);
@@ -63,7 +64,7 @@ const store = MongoStore.create({
 });
 
 store.on("error",function(e){
-    console.log("session store error",e)
+    console.log("session store error",e); // This is the session 
 })
 
 const sessionOptions = {
@@ -83,9 +84,61 @@ const sessionOptions = {
 app.use(session(sessionOptions))
 app.use(flash())
 
+
+
 app.use(passport.initialize())
 app.use(passport.session())
 passport.use(new LocalStratergy(User.authenticate()))
+
+const googleClientId = (process.env.GOOGLE_CLIENT_ID || "").trim();
+const googleClientSecret = (process.env.GOOGLE_CLIENT_SECRET || "").trim();
+
+if (!googleClientId || !googleClientSecret) {
+    console.warn(
+        "WARNING: Google OAuth is not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to enable Google login."
+    );
+} else {
+    passport.use(
+        new GoogleStrategy(
+            {
+                clientID: googleClientId,
+                clientSecret: googleClientSecret,
+                callbackURL: process.env.GOOGLE_CALLBACK_URL || "/auth/google/callback",
+            },
+            async (accessToken, refreshToken, profile, done) => {
+                try {
+                    const email = (profile?.emails?.[0]?.value || "").trim().toLowerCase();
+
+                    let user = await User.findOne({ googleId: profile.id });
+
+                    if (!user && email) {
+                        user = await User.findOne({ email });
+                    }
+
+                    if (!user) {
+                        const username =
+                            profile.displayName ||
+                            (email ? email.split("@")[0] : `google_${profile.id}`);
+
+                        user = new User({
+                            email: email || `no-email-${profile.id}@google.local`,
+                            username,
+                            googleId: profile.id,
+                        });
+                        await user.save();
+                    } else if (!user.googleId) {
+                        user.googleId = profile.id;
+                        await user.save();
+                    }
+
+                    return done(null, user);
+                } catch (err) {
+                    return done(err);
+                }
+            }
+        )
+    );
+}
 
 
 
