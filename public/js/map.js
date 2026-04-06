@@ -1,4 +1,5 @@
 // Initialize the map with a default view (World view)
+console.log(listingLocation);
 const map = L.map('map').setView([20, 0], 2);
 
 // Add OpenStreetMap tiles
@@ -28,6 +29,7 @@ async function geocodeAddress(address) {
             const lon = data[0].lon;
 
             // Update map view to the location
+            
             map.setView([lat, lon], 13);
 
             // Add a marker

@@ -8,6 +8,12 @@ const {listingSchema} = require("./schema.js");
 const ExpressError = require("./utils/ExpressError.js")
 const wrapAsync = require("./utils/wrapAsync.js")
 const {reviewSchema} = require("./schema.js");
+const multer = require('multer')
+const {storage} = require("./cloudconfig.js") ///in place of destination folder we are using cloud storage
+// const upload = multer({dest: "./pubilc/data/uploads/"})
+const upload = multer({storage,limits:{
+    filesize: 50*1024*1024 //50 mb max
+}})
 module.exports.isLoggedIn = (req,res,next) => {
     
     if(!req.isAuthenticated()){
@@ -18,6 +24,14 @@ module.exports.isLoggedIn = (req,res,next) => {
     }
     next();
 }
+
+module.exports.uploadMiddleware = upload.fields([
+    
+        //we can set the limits in this case 
+        { name: "images", maxCount: 5 },
+        { name: "videos", maxCount: 2 }
+    
+])
 
 module.exports.saveRedirectUrl = (req,res,next) => {
     if(req.session.redirectUrl){

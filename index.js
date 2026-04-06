@@ -28,6 +28,7 @@ const User = require("./Models/user.js")
 const reviewRouter = require('./routes/review.js') //I am just requiring the routes 
 const listingRouter = require('./routes/listing.js')
 const userRouter = require('./routes/user.js')
+const pincodeRouter = require("./routes/pincode.js")
 
 
 const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/stayPiolet";
@@ -176,6 +177,7 @@ app.use('/listings',listingRouter);
 app.use('/listings/:id/reviews',reviewRouter);
 //post route for reviews - 
 app.use("/", userRouter);
+app.use("/api/pincode", pincodeRouter);
 
 app.get('/privacy',(req,res) => {
     res.render("privacy.ejs")

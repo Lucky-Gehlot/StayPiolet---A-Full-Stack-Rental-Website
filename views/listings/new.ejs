@@ -27,10 +27,16 @@
                 
                 <div class="mb-3">
                     <label for="image" class="form-label">Upload image</label>
-                    <input type="file" name="listing[image]" id="image"
-                        class="form-control" required>
+                    <input type="file" name="images" id="images"
+                        class="form-control" required multiple>
                     <div class="invalid-feedback">
                     Please upload an image
+                    </div>
+                    <label for="image" class="form-label">Upload Video</label>
+                    <input type="file" name="videos" id="videos"
+                        class="form-control" multiple>
+                    <div class="invalid-feedback">
+                    Please upload an video
                     </div>
                 </div>
                 <div class="row">
@@ -44,7 +50,7 @@
                     </div>
 
 
-                    <div class="mb-3 col-md-8">
+                    <!-- <div class="mb-3 col-md-8">
                         <label for="country" class="form-label">Country</label>
                         <input type="text" placeholder="Ex. India" name="listing[country]" id="country"
                             class="form-control" required>
@@ -52,16 +58,118 @@
                         Please enter country.
                         </div>
 
+                    </div> -->
+                </div>
+
+                <!-- <div class="mb-3">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" placeholder="Ex. India" name="listing[country]" id="country"
+                        class="form-control" value="India" required>
+                    <div class="invalid-feedback">
+                        Please enter country.
+                    </div>
+                </div> -->
+
+                <h5 class="mt-4 mb-3">Address</h5>
+                <div class="mb-3">
+                    <label for="pincode" class="form-label">Pincode</label>
+                    <input type="text" placeholder="Ex. 110067" name="listing[location][pincode]" id="pincode"
+                        class="form-control" inputmode="numeric" pattern="[0-9]{6}" maxlength="10" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid pincode.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <input type="text" placeholder="Ex. Delhi" name="listing[location][state]" id="state"
+                        class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter state.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" placeholder="Ex. New Delhi" name="listing[location][city]" id="city"
+                        class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter city.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="text" placeholder="Ex. Munirka, near JNU" name="listing[location][area]" id="area"
+                        class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter area / locality.
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="location" class="form-label">Location</label>
-                    <input type="text" placeholder="Ex. Delhi, New Delhi" name="listing[location]" id="location"
-                        class="form-control" required>
+                    <label class="form-label d-block">Amenities</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Balcony Available" id="amenityBalcony" name="listing[amenities]">
+                        <label class="form-check-label" for="amenityBalcony">
+                            Balcony Available
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Air conditioner" id="amenityAc" name="listing[amenities]">
+                        <label class="form-check-label" for="amenityAc">
+                            Air conditioner
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Attached washroom" id="amenityWashroom" name="listing[amenities]">
+                        <label class="form-check-label" for="amenityWashroom">
+                            Attached washroom
+                        </label>
+                    </div>
+                </div>
 
+                <div class="mb-3">
+                    <label class="form-label d-block">Services</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Hot and fresh meals" id="serviceMeals" name="listing[services]">
+                        <label class="form-check-label" for="serviceMeals">
+                            Hot and fresh meals
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Wifi services" id="serviceWifi" name="listing[services]">
+                        <label class="form-check-label" for="serviceWifi">
+                            Wifi services
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="Laundary services" id="serviceLaundry" name="listing[services]">
+                        <label class="form-check-label" for="serviceLaundry">
+                            Laundary services
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label d-block">Gender</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="boy" id="genderBoy" name="listing[gender]" required>
+                        <label class="form-check-label" for="genderBoy">
+                            boy
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="girl" id="genderGirl" name="listing[gender]" required>
+                        <label class="form-check-label" for="genderGirl">
+                            girl
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" value="unisex" id="genderCoed" name="listing[gender]" required>
+                        <label class="form-check-label" for="genderCoed">
+                            unisex (co-ed)
+                        </label>
+                    </div>
                     <div class="invalid-feedback">
-                    Please add location.
+                        Please select one gender option.
                     </div>
                 </div>
 
@@ -70,3 +178,4 @@
             </form>
         </div>
     </div>
+    <script src="/js/pincode-autofill.js"></script>

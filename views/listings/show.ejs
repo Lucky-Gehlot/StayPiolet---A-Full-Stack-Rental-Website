@@ -14,8 +14,17 @@
                         <%=card.description%>
                     </div>
                     <div class="card-text show-text">&#8377;<%=card.price.toLocaleString("en-IN")%></div>
+                    <% 
+                        let addressLine = '';
+                        if (typeof card.location === 'object' && card.location !== null) {
+                            const parts = [card.location.area, card.location.city, card.location.state, card.location.pincode].filter(Boolean);
+                            addressLine = parts.join(', ');
+                        } else if (typeof card.location === 'string') {
+                            addressLine = card.location;
+                        }
+                    %>
                     <div class="card-text show-text">
-                        <%=card.location%>
+                        <%= addressLine %>
                     </div>
                     <div class="card-text show-text">
                         <%=card.country%>
@@ -32,13 +41,20 @@
         <div id="map" style="height: 400px; width: 100%;"></div>
     </div>
 
+    <% 
+        const mapAddress = (typeof card.location === 'object' && card.location !== null)
+            ? [card.location.area, card.location.city, card.location.state, card.location.pincode].filter(Boolean).join(', ')
+            : (card.location || '');
+        const listingLocationForMap = [mapAddress, card.country || 'India'].filter(Boolean).join(', ');
+    %>
+    <%# JSON in its own script tag avoids "Expression expected" from JS linters on EJS tags %>
+    <script type="application/json" id="listing-location-json"><%- JSON.stringify(listingLocationForMap).replace(/</g, "\\u003c") %></script>
     <script>
-        // Accessing EJS variable and making it available to map.js
-        // We also include the country for better search accuracy
-        const listingLocation = "<%= card.location %>, <%= card.country %>";
+        const listingLocation = JSON.parse(document.getElementById("listing-location-json").textContent.trim());
     </script>
 
-    <script src="/js/map.js"></script>
+    <!--This is the code to show the map we are using the script tag it will replace by js code which is written in the public folder -> js folder with the file name map.js -->
+    <script src="/js/map.js"></script> 
 
     <!--do authorization by checking if current user id's is matching with listing owner id or not-->
     <!-- if(currUser && currUser._id.equals(card.owner._id)){ -->

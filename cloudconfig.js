@@ -9,12 +9,11 @@ cloudinary.config({
     api_secret:process.env.CLOUD_API_SECRET
 })
 
-
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'StayPiolet_DEV', //we are using this for development phase of our staypiolet website
-    allowedFormats: ["png","jpg","jpeg"], // supports promises as well
+    allowedFormats: ["png","jpg","jpeg","mp4","mkv","avi"], // supports promises as well
     
   },
 });

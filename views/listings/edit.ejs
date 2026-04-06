@@ -56,18 +56,56 @@
                     </div>
                 </div>
 
+                <% 
+                    const loc = (typeof card.location === 'object' && card.location !== null) ? card.location : {};
+                    const legacyLoc = (typeof card.location === 'string') ? card.location : '';
+                %>
+                <h5 class="mt-4 mb-3">Address</h5>
                 <div class="mb-3">
-                    <label for="location" class="form-label">Location</label>
-                    <input type="text" placeholder="Ex. Delhi, New Delhi" name="listing[location]" value = "<%=card.location%>" id="location"
-                        class="form-control" required>
-
+                    <label for="pincode" class="form-label">Pincode</label>
+                    <input type="text" placeholder="Ex. 110067" name="listing[location][pincode]" id="pincode"
+                        class="form-control" value="<%= loc.pincode || '' %>" inputmode="numeric" pattern="[0-9]{6}" maxlength="10" required>
                     <div class="invalid-feedback">
-                    Please add location.
+                        Please enter a valid pincode.
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <input type="text" placeholder="Ex. Delhi" name="listing[location][state]" id="state"
+                        class="form-control" value="<%= loc.state || '' %>" required>
+                    <div class="invalid-feedback">
+                        Please enter state.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City</label>
+                    <input type="text" placeholder="Ex. New Delhi" name="listing[location][city]" id="city"
+                        class="form-control" value="<%= loc.city || '' %>" required>
+                    <div class="invalid-feedback">
+                        Please enter city.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="text" placeholder="Ex. Munirka" name="listing[location][area]" id="area"
+                        class="form-control" value="<%= loc.area || legacyLoc %>" required>
+                    <div class="invalid-feedback">
+                        Please enter area / locality.
+                    </div>
+                </div>
+
+                <%# Preserve fields required by Joi on PUT (same as create form) %>
+                <input type="hidden" name="listing[gender]" value="<%= card.gender || 'unisex' %>">
+                <% if (Array.isArray(card.amenities)) { card.amenities.forEach(function(a) { %>
+                <input type="hidden" name="listing[amenities]" value="<%= a %>">
+                <% }); } %>
+                <% if (Array.isArray(card.services)) { card.services.forEach(function(s) { %>
+                <input type="hidden" name="listing[services]" value="<%= s %>">
+                <% }); } %>
 
                 <button type="submit" class="btn btn-dark add">Edit List</button>
                 <br><br>
             </form>
         </div>
     </div>
+    <script src="/js/pincode-autofill.js"></script>

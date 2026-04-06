@@ -12,3 +12,13 @@ the data
 data validation this i achieved from the npm joy package
 5.Why we are using wrapAsync so that pure function ki definition me apan ko try catch na 
 likhna pade asyncWrap will automatically handle those things by its own 
+
+
+Amenties - Balcony Available, Air conditioner, attached washroom 
+
+Improvements in the project - 
+In the current project every time api is 
+getting called every time we are finding lat and long 
+then showing the map what you can do when once you created 
+you can store them in database so every time you just map by 
+using coordinate store in database

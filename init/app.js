@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const initData = require("./data");
 const Listing = require("../Models/listing.js")
+const Review = require("../Models/review.js")
 
 
 // 1. Connection logic
@@ -14,11 +15,12 @@ const initDB = async () =>{
     console.log("Starting DB initialization...");
     // first of all clean the data which is already there
     await Listing.deleteMany({});
+    await Review.deleteMany({});
     // The data is likely an array in initData.js, so we iterate and insert individual documents
     // If initData.data is already an array of valid documents, this is fine:
     
-    initData.data = initData.data.map((obj) => ({...obj,owner:"6945b1c2279d706fa1c1f807"}))
-    await Listing.insertMany(initData.data); 
+    // initData.data = initData.data.map((obj) => ({...obj,owner:"6945b1c2279d706fa1c1f807"}))
+    // await Listing.insertMany(initData.data); 
     console.log("Initialization complete!");
 }
 
